@@ -53,7 +53,7 @@ export const auth = (...roles: Role[]) => {
     }
 
     req.user = decode
-    // console.log(req)
+    
 
     next()
        } catch (error) {

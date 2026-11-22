@@ -4,8 +4,17 @@ import { userRouter } from "./modules/users/user.route.js";
 import { userProfile } from "./modules/profile/profile.route.js";
 import { authRouter } from "./modules/auth/auth.route.js";
 import logger from "./middleware/logger.js";
+import cors from 'cors'
+import cookieParser from "cookie-parser"
+import { globalErrorHandler } from "./middleware/globalErrorHandler.js";
 
 
+const corsOptions = {
+  origin: 'http://localhost:3000',
+  optionsSuccessStatus: 200 
+}
+app.use(cors(corsOptions))
+app.use(cookieParser())
 app.use(express.json())
 app.use(express.text())
 app.use(express.urlencoded({extended: true}))
@@ -36,6 +45,7 @@ app.use("/api/v1/profile", userProfile)
 app.use("/api/v1/auth", authRouter)
 
 
+app.use(globalErrorHandler);
 
 
 export default app
