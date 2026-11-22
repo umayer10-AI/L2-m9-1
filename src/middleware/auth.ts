@@ -2,15 +2,21 @@ import type { NextFunction, Request, Response } from "express";
 import jwt, { type JwtPayload } from "jsonwebtoken"
 import config from "../config/index.js";
 import { pool } from "../db/index.js";
+import type { Role } from "../types/index.js";
 
-export const auth = async (req: Request, res: Response, next: NextFunction) => {
+
+export const auth = (...roles: Role[]) => {
+    return async (req: Request, res: Response, next: NextFunction) => {
+
+       try {
+         // console.log(roles)
     // console.log("this is protected route")
     // console.log(req.headers.authorization)
 
     const token = req.headers.authorization
 
     if(!token){
-        res.status(401).json({
+        return res.status(401).json({
             success: false,
             message: "Unauthorize Access",
         });
@@ -26,19 +32,32 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
     // console.log(user.rows[0])
 
     if (user.rowCount === 0) {
-        res.status(404).json({
+        return res.status(404).json({
             success: false,
             message: "User Not Found!!",
         });
     }
 
     if (!user.rows[0].is_active) {
-        res.status(403).json({
+        return res.status(403).json({
             success: false,
             message: "Forbidden!!",
         });
     }
 
+    if(roles.length && !roles.includes(user.rows[0].role)){
+        return res.status(401).json({
+            success: false,
+            message: "Unauthorized access!!",
+        });
+    }
+
+    req.user = decode
+    // console.log(req)
 
     next()
+       } catch (error) {
+        next(error)
+       }
+}
 }
