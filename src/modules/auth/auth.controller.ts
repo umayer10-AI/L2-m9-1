@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { authService } from "./auth.service.js";
+import sendResponse from "../../utils/sencResponse.js";
 
 const loginUser = async(req: Request, res: Response) => {
 
@@ -18,17 +19,19 @@ const loginUser = async(req: Request, res: Response) => {
           domain: "localhost"
         })
 
-        res.status(200).json({
-        success: true,
-        message: "User Login Successfully",
-        data: result,
-        });
+        sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "User login successfully!",
+      data: result,
+    });
     }
     catch (error: any) {
-    res.status(500).json({
+   sendResponse(res, {
+      statusCode: 500,
       success: false,
       message: error?.message,
-      data: error,
+      error: error,
     });
   }
 }
