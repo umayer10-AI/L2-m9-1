@@ -49,6 +49,7 @@ const generateToken = async(req: Request, res: Response) => {
         message: "AccessToken Successfully",
         data: result,
         });
+        
     }
     catch (error: any) {
     res.status(500).json({
